@@ -3,7 +3,7 @@
 * Analyse the retrieved posts (e.g., doing Sentiment Analysis).
 <hr/>
 
-<img src="smssearch.png" width="200"/>
+<img src="https://github.com/ipavlopoulos/smsearch/blob/master/smsearch.png" width="200"/>
 
 ## Dependencies
 * [geopy](https://pypi.org/project/geopy/)
