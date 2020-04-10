@@ -1,59 +1,48 @@
 
 import tweepy
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from langdetect import detect
-from .twitter_config import config
-from .sentiment import analyse
-from collections import Counter
-from .geo import setup as geo_setup, gpd, plot_loc_with_sentiment
+from .twitter_config import twitter_config
+from .sentiment import analyse_per_language
 
-import urllib3
-
-mapping = {'en': 'naturalearth_lowres',
-           'gr': 'naturalearth_lowres'}
+from .datahandler import DataHandler
+import gc
 
 
 class GlobalStreamListener(tweepy.StreamListener):
 
-    def __init__(self, lan):
+    def __init__(self, lan: str, handler: DataHandler, update_data_size: int, max_size: int= 100000):
         super(GlobalStreamListener, self).__init__()
         self.lan = lan
         self.texts = []
         self.sentiments = []
         self.locations = []
-        self.sent_per_country = {}
-        self.geocode = geo_setup()
-        self.map_image = gpd.read_file(gpd.datasets.get_path(mapping[lan]))
-        self.ax = self.map_image.plot(figsize=(20, 40))
+        self.created_at = []
+        self.handler = handler
+        self.update_data_size = update_data_size
+        self.max_size = max_size
 
     def on_status(self, status):
         sts = status._json
         txt = sts["text"]
         user_location = sts["user"]["location"]  # loc = sts["location"]
+        created_at = sts['created_at']
         if user_location is not None:
             try:
                 lang = detect(txt)
                 if lang == self.lan:
                     self.locations.append(user_location)
-                    self.sentiments.append(analyse(txt)["compound"])
+                    self.sentiments.append(analyse_per_language(txt, self.lan)["compound"])
+                    self.created_at.append(created_at)
+                    self.texts.append(txt)
 
                     # print(txt, "\n", sent, "\n")
             except:
                 print(f"Could not detect the language for: {txt}")
                 #todo: add to logger
 
-        if len(self.locations) % 10 == 0:
-            # pl_ax, countries = plot_location(self.ax, self.locations, self.geocode)
-            pl_ax, countries = plot_loc_with_sentiment(self.ax, self.locations, self.sentiments, self.geocode)
-            print(Counter(countries))
-            print(len(countries), len(self.sentiments), len(self.locations))
-            # neg, neu, pos --> -0.05 < score, -0.05<score<0.05, score<0.05
-            print("Overall sentiment (>0.05 means 'positive'):", np.mean(self.sentiments))
-            stats = pd.DataFrame({"country": countries, "sentiment": self.sentiments})
-            print("Sentiment/Country:", stats.groupby(["country"]).mean())
-            plt.savefig("smsearch.png")
+        if len(self.locations) % self.update_data_size == 0:
+            self.dump_data()
 
     def get_size_of_data(self):
         return len(self.texts)
@@ -61,31 +50,43 @@ class GlobalStreamListener(tweepy.StreamListener):
     def get_last_results(self, num_of_results=10):
         return {'sentiment': self.sentiments[-num_of_results:],
                 'text': self.texts[-num_of_results:],
-                'location': self.locations[-num_of_results:]}
+                'location': self.locations[-num_of_results:],
+                'created_at': self.created_at[-num_of_results:]}
 
     def dump_data(self):
-        buffered_data = self.get_last_results(self.get_size_of_data())
+        buffered_data = self.get_last_results(num_of_results=self.update_data_size)
         df = pd.DataFrame.from_dict(buffered_data)
-        df.to_csv("results.csv", index=False)
+        self.handler.store_new_data(df)
+
+    def init_lists(self):
+        self.texts = []
+        self.sentiments = []
+        self.locations = []
+        self.created_at = []
+
+    def empty_lists(self):
+        del self.texts, self.sentiments, self. locations, self.created_at
+        gc.collect()
+        self.init_lists()
 
 
 class StreamExecutor:
     def __init__(self, listener: GlobalStreamListener) -> None:
-        self.auth = tweepy.OAuthHandler(config['api_key'], config['api_secret_key'])
-        self.auth.set_access_token(config['access_token'], config['access_token_secret'])
-        self.api = tweepy.API(self.auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
+        self.auth = tweepy.OAuthHandler(twitter_config['api_key'], twitter_config['api_secret_key'])
+        self.auth.set_access_token(twitter_config['access_token'], twitter_config['access_token_secret'])
         self.listener = listener
         self.stream = None
 
-    def setup(self, terms=('covid-19', 'coronavirus')):
-        self.stream = tweepy.Stream(auth=self.api.auth, listener=self.listener)
+    def setup_and_run(self, terms=('covid-19', 'coronavirus')):
+        api = tweepy.API(self.auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
+        self.stream = tweepy.Stream(auth=api.auth, listener=self.listener)
         self.stream.filter(track=terms)
 
     def set_up_with_exception_handling(self, terms=('covid-19', 'coronavirus')):
         try:
-            self.setup(terms)
-        except urllib3.exceptions.ProtocolError:
-            print("urllib3.exceptions.ProtocolError ")
+            self.setup_and_run(terms)
+        except Exception as ex:
+            print(str(ex))
 
     def loop(self, terms=('covid-19', 'coronavirus')):
         while True:

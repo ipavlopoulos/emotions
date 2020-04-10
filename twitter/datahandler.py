@@ -1,6 +1,5 @@
 import pandas as pd
 import os
-
 from datetime import date
 
 
@@ -13,12 +12,14 @@ class DataHandler:
         self.capacity_on_last_path = self.get_capacity_of_latest_path()
         self.latest_path_id = self.get_latest_path_id()
 
+
+
     def get_latest_path_id(self) -> int:
         paths = os.listdir(self.directory)
         if not len(paths):
             latest = 0
         else:
-            ids = [int(x.split(self.id_prefix)[1].split(".")[0]) for x in paths]
+            ids = [int(x.split(self.id_prefix)[-1].split(".")[0]) for x in paths]
             latest = max(ids)
             if self.max_capacity_per_file - len(self.get_dataframe_by_id(latest)) == 0:
                 latest += 1
@@ -41,7 +42,12 @@ class DataHandler:
         return self.get_path_by_id(self.get_latest_path_id())
 
     def get_path_by_id(self, num):
-        return os.path.join(self.directory, "tweets" + str(date.today()) + self.id_prefix + str(num) + ".csv")
+        return os.path.join(self.directory, "tweets" +
+                            self.id_prefix +
+                            str(date.today()) +
+                            self.id_prefix +
+                            str(num) +
+                            ".csv")
 
     def get_dataframe_by_id(self, num):
         return pd.read_csv(self.get_path_by_id(num)) if os.path.exists(self.get_path_by_id(num)) else pd.DataFrame()
@@ -56,7 +62,7 @@ class DataHandler:
         :return: None
         """
         if not os.path.exists(self.directory):
-            os.mkdir(self.directory)
+            os.makedirs(self.directory)
 
     def dump_on_new_file(self, new_data: pd.DataFrame) -> None:
         """
@@ -110,13 +116,6 @@ class DataHandler:
         """
         df = self.get_dataframe_by_id(0)
         latest = self.get_latest_path_id()
-        for idx in range(1, latest):
+        for idx in range(1, latest+1):
             df = pd.concat([df, self.get_dataframe_by_id(idx)])
         return df
-
-
-if __name__ == "__main__":
-    handler = DataHandler("dummy", 10)
-    dummy_df = pd.DataFrame.from_dict({'x': range(4), 'y': range(4)})
-    handler.store_new_data(dummy_df)
-
