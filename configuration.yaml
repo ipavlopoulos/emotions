@@ -1,0 +1,17 @@
+
+en:
+  mapping: 'naturalearth_lowres'
+  terms: ['covid-19', 'coronavirus', 'covid19']
+  path: "../../tweets/{}/"
+  csv_size: 1000000
+  update_data_size: 10
+  stream_all: False
+
+
+el:
+  mapping: 'naturalearth_lowres'
+  terms: ['covid-19', 'coronavirus', 'covid19', 'κορονοιος', 'κοροναιος', 'κορωνοιος', 'κορωναιος']
+  path: "../../tweets/{}/"
+  csv_size: 1000000
+  update_data_size: 10
+  stream_all: True

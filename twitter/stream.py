@@ -11,7 +11,11 @@ import gc
 
 class GlobalStreamListener(tweepy.StreamListener):
 
-    def __init__(self, lan: str, handler: DataHandler, update_data_size: int, max_size: int= 100000):
+    def __init__(self, lan: str,
+                 handler: DataHandler,
+                 update_data_size: int,
+                 max_size: int = 100000,
+                 stream_all: bool = False):
         super(GlobalStreamListener, self).__init__()
         self.lan = lan
         self.texts = []
@@ -21,16 +25,17 @@ class GlobalStreamListener(tweepy.StreamListener):
         self.handler = handler
         self.update_data_size = update_data_size
         self.max_size = max_size
+        self.stream_all = stream_all
 
     def on_status(self, status):
         sts = status._json
         txt = sts["text"]
         user_location = sts["user"]["location"]  # loc = sts["location"]
         created_at = sts['created_at']
-        if user_location is not None:
+        if user_location is not None or self.stream_all:
             try:
                 lang = detect(txt)
-                if lang == self.lan:
+                if lang == self.lan and txt not in self.texts:
                     self.locations.append(user_location)
                     self.sentiments.append(analyse_per_language(txt, self.lan)["compound"])
                     self.created_at.append(created_at)
