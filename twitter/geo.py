@@ -59,6 +59,7 @@ def plot_loc(ax, locations, geocode):
     gdf.plot(ax=ax, color='red')
     return ax, countries
 
+
 def plot_loc_with_sentiment(ax, locations, sentiments, geocode):
     """
         Plot the locations into a map

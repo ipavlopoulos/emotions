@@ -4,7 +4,16 @@ from datetime import date
 
 
 class DataHandler:
+    """
+    this class serves to store data from the Streamer and give data to the visualizer
+    """
     def __init__(self, directory, max_capacity_per_file):
+        """
+
+        :param directory: the directory where all csv paths will be stored
+        :param max_capacity_per_file: how many rows a file can have. If a file reach this limit, then a new file
+        stores the rest of the data.
+        """
         self.id_prefix = "_id_"
         self.directory = directory
         self.max_capacity_per_file = max_capacity_per_file
@@ -12,9 +21,11 @@ class DataHandler:
         self.capacity_on_last_path = self.get_capacity_of_latest_path()
         self.latest_path_id = self.get_latest_path_id()
 
-
-
     def get_latest_path_id(self) -> int:
+        """
+        find the id of the last csv file. The next file will have the next natural number as id
+        :return:
+        """
         paths = os.listdir(self.directory)
         if not len(paths):
             latest = 0
@@ -27,6 +38,7 @@ class DataHandler:
 
     def get_capacity_of_latest_path(self) -> int:
         """
+        How may rows can store the latest path.
         :return: the difference between the maximum capacity in rows of the last path and the current size
         """
         path = self.get_latest_path()
@@ -84,12 +96,21 @@ class DataHandler:
         self.check_and_update_capacity()
 
     def check_and_update_capacity(self):
+        """
+        When a csv reaches the full capacity, then prepares for the opening of the next file
+        :return:
+        """
         capacity = self.get_capacity_of_latest_path()
         if capacity == 0:
             self.latest_path_id += 1
             self.capacity_on_last_path = self.max_capacity_per_file
 
     def store_new_data(self, df_new: pd.DataFrame):
+        """
+        runs the whole operation of storing new data
+        :param df_new: the new data as pandas Dataframe
+        :return:
+        """
         capacity = self.get_capacity_of_latest_path()
         if len(df_new) < capacity:
             if not os.path.exists(self.get_latest_path()):
