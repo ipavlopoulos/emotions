@@ -66,6 +66,7 @@ def plot_loc_with_sentiment(ax, locations, sentiments, geocode):
         :param ax: the object to draw on
         :param locations: list of locations
         :param geocode: as returned from setup
+        :param sentiments: the sentiment scores of the tweets
         :return:
         """
     cmap = LinearSegmentedColormap.from_list('rg', ["r", "w", "g"], N=256)

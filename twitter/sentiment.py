@@ -14,7 +14,7 @@ def analyse_per_language(tweet, lan):
     returns the sentiment of a tweet.
     If there is not a trained classifier return o neutral value (0.5)
     :param tweet:
-    :param lan:
+    :param lan: 'en' for english 'el' (or any) for greek
     :return:
     """
     if lan == 'en':
