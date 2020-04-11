@@ -1,6 +1,5 @@
 from twitter.stream import StreamExecutor, GlobalStreamListener
 from twitter.datahandler import DataHandler
-# from config import PATH, TERMS, CSV_SIZE, UPDATE_DATA_SIZE
 import yaml
 
 
