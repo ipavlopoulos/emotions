@@ -6,7 +6,10 @@ en:
   csv_size: 1000000
   update_data_size: 1000
   stream_all: False
-  image_path: smsearch_en.png
+  image_dir: images
+  image_path: smsearch_gl.png
+  hash_addresses_dir: addresses
+  hash_addresses_path: addresses_gl.csv
 
 el:
   mapping: 'naturalearth_lowres'
@@ -15,7 +18,10 @@ el:
   csv_size: 1000000
   update_data_size: 10
   stream_all: True
+  image_dir: images
   image_path: smsearch_el.png
+  hash_addresses_dir: addresses
+  hash_addresses_path: addresses_el.csv
 
 
 

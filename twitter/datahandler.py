@@ -35,7 +35,7 @@ class DataHandler:
         if not len(paths):
             latest = 0
         else:
-            ids = [int(x.split(self.id_prefix)[-1].split(".")[0]) for x in paths]
+            ids = [int(x.split(self.id_prefix)[-1].split(".")[0]) for x in paths if x.endswith(".csv")]
             latest = max(ids)
             if self.max_capacity_per_file - len(self.get_dataframe_by_id(latest)) == 0:
                 latest += 1
@@ -60,8 +60,8 @@ class DataHandler:
 
     def get_path_by_id(self, num):
         return os.path.join(self.directory, "tweets" +
-                            self.id_prefix + self.get_latest_date()+
-                            # str(date.today())
+                            self.id_prefix +
+                            self.get_latest_date() +
                             self.id_prefix +
                             str(num) +
                             ".csv")
