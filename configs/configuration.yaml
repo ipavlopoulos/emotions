@@ -4,7 +4,7 @@ en:
   terms: ['covid-19', 'coronavirus', 'covid19']
   path: "../tweets/en/"
   csv_size: 1000000
-  update_data_size: 10
+  update_data_size: 1000
   stream_all: False
   image_path: smsearch_en.png
 

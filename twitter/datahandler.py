@@ -23,9 +23,8 @@ class DataHandler:
         self.latest_date = self.get_latest_date()
 
     def get_latest_date(self):
-        dates = [int(x.split(self.id_prefix)[-2]) for x in os.listdir(self.directory)]
+        dates = [str(x.split(self.id_prefix)[-2]) for x in os.listdir(self.directory)]
         return max(dates) if len(dates) else str(date.today())
-
 
     def get_latest_path_id(self) -> int:
         """
@@ -61,8 +60,8 @@ class DataHandler:
 
     def get_path_by_id(self, num):
         return os.path.join(self.directory, "tweets" +
-                            self.id_prefix +
-                            str(date.today()) +
+                            self.id_prefix + self.get_latest_date()+
+                            # str(date.today())
                             self.id_prefix +
                             str(num) +
                             ".csv")

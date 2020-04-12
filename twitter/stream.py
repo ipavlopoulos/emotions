@@ -66,6 +66,8 @@ class GlobalStreamListener(tweepy.StreamListener):
         buffered_data = self.get_last_results(num_of_results=self.update_data_size)
         df = pd.DataFrame.from_dict(buffered_data)
         self.handler.store_new_data(df)
+        if self.get_size_of_data() % self.max_size == 0:
+            self.empty_lists()
 
     def init_lists(self):
         """
