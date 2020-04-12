@@ -131,7 +131,8 @@ dmypy.json
 .idea
 .pyre/
 
-# twitter
-twitter/config.json
+# images
+images/
 
-# yaml
+# csv hash
+addresses/
