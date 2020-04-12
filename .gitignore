@@ -126,4 +126,12 @@ venv.bak/
 dmypy.json
 
 # Pyre type checker
+
+# idea
+.idea
 .pyre/
+
+# twitter
+twitter/config.json
+
+# yaml
