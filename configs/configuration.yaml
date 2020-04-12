@@ -1,7 +1,7 @@
 
 en:
   mapping: 'naturalearth_lowres'
-  terms: ['covid-19', 'coronavirus', 'covid19']
+  terms: ['covid-19', 'coronavirus', 'covid19', 'SARS-CoV-2']
   path: "../tweets/en/"
   csv_size: 1000000
   update_data_size: 1000
