@@ -10,7 +10,8 @@ cli = click.Group()
 @cli.command()
 @click.option('--lan', default='en')
 @click.option('--config', default="configs/configuration.yaml")
-def execute_data_visualization(lan, config):
+@click.option('--pins_num', default=1000)
+def execute_data_visualization(lan, config, pins_num):
     config = load_yaml(config)[lan]
     handler = DataHandler(directory=config['path'], max_capacity_per_file=config['csv_size'])
     visualizer = Visualizer(mapping=config['mapping'], handler=handler)
@@ -18,7 +19,7 @@ def execute_data_visualization(lan, config):
         os.makedirs(config['image_dir'])
     if not os.path.exists(config['hash_addresses_dir']):
         os.makedirs(config['hash_addresses_dir'])
-    visualizer.pin(num_of_data=10000, image_path=os.path.join(config['image_dir'], config['image_path']),
+    visualizer.pin(num_of_data=pins_num, image_path=os.path.join(config['image_dir'], config['image_path']),
                    geohashing_path=os.path.join(config['hash_addresses_dir'], config['hash_addresses_path']))
 
 
