@@ -52,7 +52,7 @@ class GlobalStreamListener(tweepy.StreamListener):
                     self.texts.append(txt)
                     self.retweet.append(is_retweet)
                     self.users.append(user)
-                    if self.get_size_of_data() and (self.get_size_of_data() % self.update_data_size) == 0:
+                    if self.get_size_of_data() % self.update_data_size == 0:
                         self.dump_data()
             except:
                 print(f"Could not detect the language for: {txt}")
