@@ -28,6 +28,8 @@ class GlobalStreamListener(tweepy.StreamListener):
         self.sentiments = []
         self.locations = []
         self.created_at = []
+        self.retweet = []
+        self.users = []
         self.handler = handler
         self.update_data_size = update_data_size
         self.max_size = max_size
@@ -36,8 +38,10 @@ class GlobalStreamListener(tweepy.StreamListener):
     def on_status(self, status):
         sts = status._json
         txt = sts["text"]
+        user = sts['user']['id']
         user_location = sts["user"]["location"]
         created_at = sts['created_at']
+        is_retweet = txt.lower().startswith("rt @")
         if user_location is not None or self.stream_all:
             try:
                 lang = detect(txt)
@@ -46,6 +50,8 @@ class GlobalStreamListener(tweepy.StreamListener):
                     self.sentiments.append(analyse_per_language(txt, self.lan)["compound"])
                     self.created_at.append(created_at)
                     self.texts.append(txt)
+                    self.retweet.append(is_retweet)
+                    self.users.append(user)
             except:
                 print(f"Could not detect the language for: {txt}")
                 #todo: add to logger
@@ -60,7 +66,9 @@ class GlobalStreamListener(tweepy.StreamListener):
         return {'sentiment': self.sentiments[-num_of_results:],
                 'text': self.texts[-num_of_results:],
                 'location': self.locations[-num_of_results:],
-                'created_at': self.created_at[-num_of_results:]}
+                'created_at': self.created_at[-num_of_results:],
+                'is_retweet': self.retweet[-num_of_results:],
+                'user': self.users[-num_of_results:]}
 
     def dump_data(self):
         buffered_data = self.get_last_results(num_of_results=self.update_data_size)
@@ -78,13 +86,15 @@ class GlobalStreamListener(tweepy.StreamListener):
         self.sentiments = []
         self.locations = []
         self.created_at = []
+        self.retweet = []
+        self.users = []
 
     def empty_lists(self):
         """
         empties the lists, calls the garbage collector and re-initialize the lists
         :return:
         """
-        del self.texts, self.sentiments, self. locations, self.created_at
+        del self.texts, self.sentiments, self. locations, self.created_at, self.users, self.retweet
         gc.collect()
         self.init_lists()
 
