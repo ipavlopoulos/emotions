@@ -1,6 +1,5 @@
 import pandas as pd
 import os
-from datetime import date
 
 
 class DataHandler:
@@ -20,11 +19,6 @@ class DataHandler:
         self.create_dir_if_not_exists()
         self.capacity_on_last_path = self.get_capacity_of_latest_path()
         self.latest_path_id = self.get_latest_path_id()
-        self.latest_date = self.get_latest_date()
-
-    def get_latest_date(self):
-        dates = [str(x.split(self.id_prefix)[-2]) for x in os.listdir(self.directory)]
-        return max(dates) if len(dates) else str(date.today())
 
     def get_latest_path_id(self) -> int:
         """
@@ -60,8 +54,6 @@ class DataHandler:
 
     def get_path_by_id(self, num):
         return os.path.join(self.directory, "tweets" +
-                            self.id_prefix +
-                            self.get_latest_date() +
                             self.id_prefix +
                             str(num) +
                             ".csv")
