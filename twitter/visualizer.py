@@ -19,13 +19,15 @@ class Visualizer:
         self.map_image = gpd.read_file(gpd.datasets.get_path(mapping))
         self.ax = self.map_image.plot(figsize=(20, 40))
 
-    def get_last_pins(self, num_of_pins: int, address_dict: dict, addresses_path: str) -> list:
+    def get_last_pins(self, num_of_pins: int, addresses_path: str) -> list:
+        address_dict = get_dict_for_geocoding(addresses_path)
         df = self.handler.load_all_data()
         df = df[df['location'].notnull()].tail(num_of_pins)
         result_set = []
         for _, row in df.iterrows():
             lat, lon, _ = loc_to_latlon_with_hashing(row['location'], self.geocode, address_dict)
-            result_set.append({'lat': lat, 'lon': lon, 'sentiment': row['sentiment']})
+            if lat:
+                result_set.append({'lat': lat, 'lon': lon, 'sentiment': row['sentiment']})
         dump_dict_for_geocoding(address_dict, addresses_path)
         return result_set
 

@@ -20,7 +20,7 @@ def execute_data_visualization(lan, config, pins_num):
     if not os.path.exists(config['hash_addresses_dir']):
         os.makedirs(config['hash_addresses_dir'])
     visualizer.pin(num_of_data=pins_num, image_path=os.path.join(config['image_dir'], config['image_path']),
-                   geohashing_path=os.path.join(config['hash_addresses_dir'], config['hash_addresses_path']))
+                   addresses_path=os.path.join(config['hash_addresses_dir'], config['hash_addresses_path']))
 
 
 if __name__ == "__main__":
