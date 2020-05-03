@@ -1,0 +1,111 @@
+training:
+  batch_size: 64
+  epochs: 10
+  patience: 5
+  lr: 0.001
+
+preprocessing:
+  embeddings_path: ""
+  embedding_size: 200
+  train_path: ''
+  test_path: ''
+  unk_token: "$%UNK%$"
+  pad_token: "$%PAD%$"
+  target_list: ['anger', 'anticipation', 'disgust', 'fear', 'joy',
+                'love', 'optimism', 'pessimism', 'sadness', 'surprise', 'trust']
+
+model:
+  cnn:
+    embeddings_dropout: 0.0
+    filters: 32
+    top_mlp_layers: 2
+    top_mlp_activation: relu
+    top_mlp_outer_activation: None
+    top_mlp_dropout: 0.0
+    min_kernel: 2
+    max_kernel: 5
+
+  last_state_rnn:
+    embeddings_dropout: 0.0
+    is_gru: True
+    cell_hidden_size: 128
+    stacked_layers: 1
+    bidirectional: False
+    top_mlp_layers: 2
+    top_mlp_activation: relu
+    top_mlp_outer_activation: None
+    top_mlp_dropout: 0.0
+
+  mlp:
+    embeddings_dropout: 0.0
+    top_mlp_layers: 3
+    top_mlp_activation: relu
+    top_mlp_outer_activation: None
+    top_mlp_dropout: 0.0
+
+  mlp_with_multiple_attention:
+    embeddings_dropout: 0.0
+    att_mlp_layers: 1
+    att_mlp_dropout: 0.0
+    top_mlp_layers: 3
+    top_mlp_activation: relu
+    top_mlp_outer_activation: None
+    top_mlp_dropout: 0.0
+
+  multi_attention_rnn:
+    embeddings_dropout: 0.0
+    is_gru: True
+    cell_hidden_size: 128
+    stacked_layers: 1
+    bidirectional: False
+    att_mlp_layers: 1
+    att_mlp_dropout: 0.0
+    top_mlp_layers: 2
+    top_mlp_activation: relu
+    top_mlp_outer_activation: None
+    top_mlp_dropout: 0.0
+
+  multi_attention_rnn_concat_cnn:
+    embeddings_dropout: 0.0
+    is_gru: True
+    filters: 32
+    cell_hidden_size: 128
+    stacked_layers: 1
+    bidirectional: False
+    min_kernel: 1
+    max_kernel: 5
+    att_mlp_layers: 1
+    att_mlp_dropout: 0.0
+    top_mlp_layers: 2
+    top_mlp_activation: relu
+    top_mlp_outer_activation: None
+    top_mlp_dropout: 0.0
+
+  projected_multi_attention_rnn:
+    embeddings_dropout: 0.0
+    is_gru: True
+    cell_hidden_size: 128
+    stacked_layers: 1
+    bidirectional: False
+    att_mlp_layers: 1
+    att_mlp_dropout: 0.0
+    top_mlp_layers: 2
+    top_mlp_activation: relu
+    top_mlp_outer_activation: None
+    top_mlp_dropout: 0.0
+
+  single_attention_rnn:
+    embeddings_dropout: 0.0
+    is_gru: True
+    cell_hidden_size: 128
+    stacked_layers: 1
+    bidirectional: False
+    att_mlp_layers: 2
+    att_mlp_dropout: 0.0
+    top_mlp_layers: 1
+    top_mlp_activation: relu
+    top_mlp_outer_activation: None
+    top_mlp_dropout: 0.0
+
+
+
