@@ -37,7 +37,11 @@ class GlobalStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
         sts = status._json
-        txt = sts["text"]
+        try:
+            txt = status.extended_tweet["full_text"]
+        except AttributeError:
+            txt = sts['text']
+
         user = sts['user']['id']
         user_location = sts["user"]["location"]
         created_at = sts['created_at']
@@ -55,8 +59,9 @@ class GlobalStreamListener(tweepy.StreamListener):
                     if self.get_size_of_data() % self.update_data_size == 0:
                         self.dump_data()
             except:
-                print(f"Could not detect the language for: {txt}")
+                # print(f"Could not detect the language for: {txt}")
                 #todo: add to logger
+                pass
 
     def get_size_of_data(self):
         return len(self.texts)
@@ -121,7 +126,7 @@ class StreamExecutor:
         :return:
         """
         api = tweepy.API(self.auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
-        self.stream = tweepy.Stream(auth=api.auth, listener=self.listener)
+        self.stream = tweepy.Stream(auth=api.auth, listener=self.listener, tweet_mode='extended')
         self.stream.filter(track=terms)
 
     def set_up_with_exception_handling(self, terms: tuple):
