@@ -23,7 +23,7 @@ el:
   hash_addresses_dir: addresses
   hash_addresses_path: addresses_el.csv
 
-se:
+sv:
   mapping: 'naturalearth_lowres'
   terms: ['covid-19', 'coronavirus', 'covid19']
   path: "../tweets/se/"
