@@ -23,5 +23,15 @@ el:
   hash_addresses_dir: addresses
   hash_addresses_path: addresses_el.csv
 
-
+se:
+  mapping: 'naturalearth_lowres'
+  terms: ['covid-19', 'coronavirus', 'covid19']
+  path: "../tweets/se/"
+  csv_size: 1000000
+  update_data_size: 10
+  stream_all: True
+  image_dir: images
+  image_path: smsearch_se.png
+  hash_addresses_dir: addresses
+  hash_addresses_path: addresses_se.csv
 
