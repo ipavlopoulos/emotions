@@ -1,6 +1,6 @@
-# smsearch
-* Search Social Media (e.g., Twitter) about specific topics (e.g., COVID-19).
-* Analyse the retrieved posts (e.g., doing Sentiment Analysis).
+# Emotion detection in Twitter 
+* Collect tweets about a specific topic (by default, the recent pandemic is used).
+* Analyse the sentiment and emotions of the tweets per day, per country.
 <hr/>
 
 <img src="https://raw.githubusercontent.com/ipavlopoulos/smsearch/master/smsearch.png" width="100%"/>
@@ -12,9 +12,3 @@
 * [descartes](https://pypi.org/project/descartes/)
 * [vaderSentiment](https://pypi.org/project/vaderSentiment/)
 * Also, you need to sign up for Twitter Dev API credentials and update ``twitter_config.py``
-
-## Under development
-* Add logger.
-* Add sampling to perform sentiment analysis (for fairness), and do not show all countries (ones with too few instances should be excluded).
-* Show sentiments on map.
-* Add or store time based estimations; e.g., to see the sentiment over time.
