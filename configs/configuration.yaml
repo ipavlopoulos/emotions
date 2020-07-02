@@ -5,7 +5,7 @@ en:
   path: "../tweets/en/"
   csv_size: 1000000
   update_data_size: 1000
-  stream_all: False
+  stream_all: True
   image_dir: images
   image_path: smsearch_gl.png
   hash_addresses_dir: addresses
