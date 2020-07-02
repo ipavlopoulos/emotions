@@ -24,6 +24,8 @@ class GlobalStreamListener(tweepy.StreamListener):
         """
         super(GlobalStreamListener, self).__init__()
         self.lan = lan
+        # Place type, country, country code και full_name
+
         self.texts = []
         self.sentiments = []
         self.locations = []
@@ -31,6 +33,10 @@ class GlobalStreamListener(tweepy.StreamListener):
         self.retweet = []
         self.users = []
         self.tweet_ids = []
+        self.place_types = []
+        self.country = []
+        self.country_code = []
+        self.full_name = []
         self.handler = handler
         self.update_data_size = update_data_size
         self.max_size = max_size
@@ -46,7 +52,7 @@ class GlobalStreamListener(tweepy.StreamListener):
         user = sts['user']['id']
         user_location = sts["user"]["location"]
         created_at = sts['created_at']
-        tweet_id = sts['id']
+        tweet_id = str(sts['id'])
         is_retweet = txt.lower().startswith("rt @")
         if user_location is not None or self.stream_all:
             try:
@@ -59,6 +65,16 @@ class GlobalStreamListener(tweepy.StreamListener):
                     self.retweet.append(is_retweet)
                     self.users.append(user)
                     self.tweet_ids.append(tweet_id)
+                    if sts['place']:
+                        self.country.append(sts['place'].get('country'))
+                        self.country_code.append(sts['place'].get('country_code'))
+                        self.place_types.append(sts['place'].get('place_type'))
+                        self.full_name.append(sts['place'].get('full_name'))
+                    else:
+                        self.country.append(None)
+                        self.country_code.append(None)
+                        self.place_types.append(None)
+                        self.full_name.append(None)
                     if self.get_size_of_data() % self.update_data_size == 0:
                         self.dump_data()
             except:
@@ -72,10 +88,14 @@ class GlobalStreamListener(tweepy.StreamListener):
         return {'sentiment': self.sentiments[-num_of_results:],
                 'tweet_id': self.tweet_ids[-num_of_results:],
                 'text': self.texts[-num_of_results:],
-                'location': self.locations[-num_of_results:],
+                'user_location': self.locations[-num_of_results:],
                 'created_at': self.created_at[-num_of_results:],
                 'is_retweet': self.retweet[-num_of_results:],
-                'user': self.users[-num_of_results:]}
+                'user': self.users[-num_of_results:],
+                'place_type': self.place_types[-num_of_results:],
+                'country': self.country[-num_of_results:],
+                'country_code': self.country_code[-num_of_results:],
+                'full_name': self.full_name[-num_of_results:]}
 
     def dump_data(self):
         buffered_data = self.get_last_results(num_of_results=self.update_data_size)
