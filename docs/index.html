@@ -1,8 +1,11 @@
 <head><script src="https://cdn.plot.ly/plotly-latest.min.js"></script></head>
 
-<div id="divlab" style="width:600px;height:250px;"></div>
+<div id="positive_div" style="width:600px;height:250px;"></div>
+<div id="negative_div" style="width:600px;height:250px;"></div>
 <script>
-    var layout = {title: 'Basic Time Series',};
-    var data = [{x: [1, 2, 3, 4, 5], y: [1, 2, 4, 8, 16] }];
-	Plotly.newPlot('divlab', data, layout);
+    var pos_data = [{y: [0.1, 0.2, 1, 4, 10], x: ['2020-07-01', '2020-07-15','2020-08-1', '2020-08-15'], line: {color: 'green'}}]
+    var neg_data = [{y: [5, 4, 2, 0.5, 0.01], x: ['2020-07-01', '2020-07-15','2020-08-1', '2020-08-15'], line: {color: 'red'}}]
+	Plotly.newPlot(document.getElementById('positive_div'), pos_data, {title: 'Positive Sentiment',} );
+	Plotly.newPlot(document.getElementById('negative_div'), neg_data, {title: 'Negative Sentiment',} );
+
 </script>
