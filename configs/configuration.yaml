@@ -1,7 +1,7 @@
 
 en:
   mapping: 'naturalearth_lowres'
-  terms: ['covid-19', 'coronavirus', 'covid19', 'SARS-CoV-2']
+  terms: ['covid19', '#ncov2019', 'Covid_19', '#conronaviruspandemic', 'COVID-19', '#caronavirus', '#infocoronavirus', 'coronavirusupdate', 'carona virus', '#coronavirues', '#Coronovirus', '#2019nCoV', '#Coronvirus', '#Coronavirus', 'covid-19', 'Coronavirus', '#caronavirusoutbreak', 'covid', '#CoronaVirusUpdate', '#Corvid19virus', '#covid', 'coronavirus', '#CoronaVirus', 'nCoV', 'covid 19', '#nCoV2019', '#covid_19', '#coronavirusupdates', '#COVIDー19', '#2019nCov', '#CoronaAlert', '#coronavirus', 'SARS-CoV-2', '#nCoV', '#coronanews', '#COVID', '2019nCoV', '#CoronavirusOutbreak', '#coronapocolypse', '#COVID19', '#codvid19', '#codvid_19', 'coronavirus outbreak']
   path: "../tweets/en/"
   csv_size: 1000000
   update_data_size: 1000
@@ -13,7 +13,7 @@ en:
 
 el:
   mapping: 'naturalearth_lowres'
-  terms: ['covid-19', 'coronavirus', 'covid19', 'κορονοιος', 'κοροναιος', 'κορωνοιος', 'κορωναιος']
+  terms: ['covid19', '#ncov2019', 'Covid_19', '#conronaviruspandemic', 'COVID-19', '#caronavirus', '#infocoronavirus', 'coronavirusupdate', 'carona virus', '#coronavirues', '#Coronovirus', '#2019nCoV', '#Coronvirus', '#Coronavirus', 'covid-19', 'Coronavirus', '#caronavirusoutbreak', 'covid', '#CoronaVirusUpdate', '#Corvid19virus', 'coronavirus', '#covid', '#CoronaVirus', 'nCoV', 'κοροναιος', 'covid 19', '#nCoV2019', '#covid_19', '#coronavirusupdates', '#COVIDー19', '#2019nCov', '#CoronaAlert', '#coronavirus', 'SARS-CoV-2', '#nCoV', 'κορονοιος', 'κορωνοιος', '#coronanews', '#COVID', '2019nCoV', '#CoronavirusOutbreak', '#coronapocolypse', 'κορωναιος', '#COVID19', '#codvid19', '#codvid_19', 'coronavirus outbreak']
   path: "../tweets/el/"
   csv_size: 1000000
   update_data_size: 10
@@ -25,7 +25,7 @@ el:
 
 sv:
   mapping: 'naturalearth_lowres'
-  terms: ['covid-19', 'coronavirus', 'covid19']
+  terms: ['covid19', '#ncov2019', 'Covid_19', '#conronaviruspandemic', 'COVID-19', '#caronavirus', '#infocoronavirus', 'coronavirusupdate', 'carona virus', '#coronavirues', '#Coronovirus', '#2019nCoV', '#Coronvirus', '#Coronavirus', 'covid-19', 'Coronavirus', '#caronavirusoutbreak', 'covid', '#CoronaVirusUpdate', '#Corvid19virus', 'coronavirus', '#covid', '#CoronaVirus', 'nCoV', 'covid 19', '#nCoV2019', '#covid_19', '#coronavirusupdates', '#COVIDー19', '#2019nCov', '#CoronaAlert', '#coronavirus', '#nCoV', '#coronanews', '#COVID', '2019nCoV', '#CoronavirusOutbreak', '#coronapocolypse', '#COVID19', '#codvid19', '#codvid_19', 'coronavirus outbreak']
   path: "../tweets/se/"
   csv_size: 1000000
   update_data_size: 10
