@@ -25,7 +25,7 @@ class DataHandler:
         find the id of the last csv file. The next file will have the next natural number as id
         :return:
         """
-        paths = os.listdir(self.directory)
+        paths = [x for x in os.listdir(self.directory) if x.endswith("csv")]
         if not len(paths):
             latest = 0
         else:
