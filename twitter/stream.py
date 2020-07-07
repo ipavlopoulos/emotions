@@ -116,13 +116,18 @@ class GlobalStreamListener(tweepy.StreamListener):
         self.retweet = []
         self.users = []
         self.tweet_ids = []
+        self.place_types = []
+        self.country = []
+        self.country_code = []
+        self.full_name = []
 
     def empty_lists(self):
         """
         empties the lists, calls the garbage collector and re-initialize the lists
         :return:
         """
-        del self.texts, self.sentiments, self. locations, self.created_at, self.users, self.retweet, self.tweet_ids
+        del self.texts, self.sentiments, self. locations, self.created_at, self.users, \
+            self.retweet, self.tweet_ids, self.place_types, self.country, self.country_code, self.full_name
         gc.collect()
         self.init_lists()
 
