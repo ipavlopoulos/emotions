@@ -15,10 +15,10 @@ def dump(lan, config):
     data = pd.read_csv(f"{config['path']}tweets_id_0.csv")
     tweets = data[data.is_retweet == False]
     # fetch only tweets from yesterday
-    tweets.set_index(pd.to_datetime(tweets.created_at, format='%a %b %d %H:%M:%S +0000 %Y'))
+    tweets.set_index(pd.to_datetime(tweets.created_at, format='%a %b %d %H:%M:%S +0000 %Y'), inplace=True)
     yesterday = datetime.now() - timedelta(1)
     # dump
-    tweets.loc[yesterday].to_csv(config['path']+str(yesterday)[:10] + ".csv", index=False)
+    tweets[tweets.index >= yesterday].to_csv(config['path']+str(yesterday)[:10] + ".csv", index=False)
 
 
 if __name__ == "__main__":
