@@ -37,6 +37,12 @@ class GlobalStreamListener(tweepy.StreamListener):
         self.country = []
         self.country_code = []
         self.full_name = []
+
+        #### emotions
+        self.anger, self.anticipation,   self.disgust, self.fear, self.joy = [], [], [], [], []
+        self.love, self.optimism, self.pessimism, self.sadness, self.surprise = [], [], [], [], []
+        self.trust, self.positive, self.negative = [], [], []
+
         self.handler = handler
         self.update_data_size = update_data_size
         self.max_size = max_size
@@ -59,7 +65,7 @@ class GlobalStreamListener(tweepy.StreamListener):
                 lang = detect(txt)
                 if lang == self.lan and txt not in self.texts:
                     self.locations.append(user_location)
-                    self.sentiments.append(analyse_per_language(txt, self.lan)["compound"])
+                    # self.sentiments.append(analyse_per_language(txt, self.lan)["compound"])
                     self.created_at.append(created_at)
                     self.texts.append(txt)
                     self.retweet.append(is_retweet)
@@ -77,6 +83,20 @@ class GlobalStreamListener(tweepy.StreamListener):
                         self.full_name.append(None)
                     if self.get_size_of_data() % self.update_data_size == 0:
                         self.dump_data()
+                    scores = analyse_per_language(txt, lang)
+                    self.anticipation.append(scores['anticipation'])
+                    self.anger.append(scores['anger'])
+                    self.disgust.append(scores['disgust'])
+                    self.fear.append(scores['fear'])
+                    self.joy.append(scores['joy'])
+                    self.love.append(scores['love'])
+                    self.optimism.append(scores['optimism'])
+                    self.pessimism.append(scores['pessimism'])
+                    self.sadness.append(scores['sadness'])
+                    self.surprise.append(scores['surprise'])
+                    self.trust.append(scores['trust'])
+                    self.positive.append(scores['positive'])
+                    self.negative.append(scores['negative'])
             except:
                 print(f"Could not detect the language for: {txt}")
                 #todo: add to logger
@@ -85,7 +105,8 @@ class GlobalStreamListener(tweepy.StreamListener):
         return len(self.texts)
 
     def get_last_results(self, num_of_results=10):
-        return {'sentiment': self.sentiments[-num_of_results:],
+        return {
+                # 'sentiment': self.sentiments[-num_of_results:],
                 'tweet_id': self.tweet_ids[-num_of_results:],
                 'text': self.texts[-num_of_results:],
                 'user_location': self.locations[-num_of_results:],
@@ -95,7 +116,21 @@ class GlobalStreamListener(tweepy.StreamListener):
                 'place_type': self.place_types[-num_of_results:],
                 'country': self.country[-num_of_results:],
                 'country_code': self.country_code[-num_of_results:],
-                'full_name': self.full_name[-num_of_results:]}
+                'full_name': self.full_name[-num_of_results:],
+                'anger': self.full_name[-num_of_results:],
+                'anticipation': self.anticipation[-num_of_results:],
+                'disgust': self.disgust[-num_of_results:],
+                'fear': self.disgust[-num_of_results:],
+                'joy': self.joy[-num_of_results:],
+                'love': self.love[-num_of_results:],
+                'optimism': self.optimism[-num_of_results:],
+                'pessimism': self.pessimism[-num_of_results:],
+                'sadness': self.sadness[-num_of_results:],
+                'surprise': self.surprise[-num_of_results:],
+                'trust': self.trust[-num_of_results:],
+                'positive': self.positive[-num_of_results:],
+                'negative': self.negative[-num_of_results:]
+         }
 
     def dump_data(self):
         buffered_data = self.get_last_results(num_of_results=self.update_data_size)
@@ -120,14 +155,19 @@ class GlobalStreamListener(tweepy.StreamListener):
         self.country = []
         self.country_code = []
         self.full_name = []
+        self.anger, self.anticipation, self.disgust, self.fear, self.joy = [], [], [], [], []
+        self.love, self.optimism, self.pessimism, self.sadness, self.surprise = [], [], [], [], []
+        self.trust, self.positive, self.negative = [], [], []
 
     def empty_lists(self):
         """
         empties the lists, calls the garbage collector and re-initialize the lists
         :return:
         """
-        del self.texts, self.sentiments, self. locations, self.created_at, self.users, \
-            self.retweet, self.tweet_ids, self.place_types, self.country, self.country_code, self.full_name
+        del self.texts, self.sentiments, self. locations, self.created_at, self.users
+        del self.retweet, self.tweet_ids, self.place_types, self.country, self.country_code, self.full_name
+        del self.anger, self.anticipation,   self.disgust, self.fear, self.joy, self.love, self.optimism
+        del self.pessimism, self.sadness, self.surprise, self.trust, self.positive, self.negative
         gc.collect()
         self.init_lists()
 

@@ -1,12 +1,24 @@
 # https://github.com/cjhutto/vaderSentiment
 
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from transformers import RobertaTokenizer
 
+from models.bert_utils import score, process_tweet, load_torch_model, model_path, EMOTIONS
+
+tokenizer = RobertaTokenizer.from_pretrained("roberta_large")
 analyzer = SentimentIntensityAnalyzer()
+
+model = load_torch_model(model_path)
 
 
 def analyse(tweet):
     return analyzer.polarity_scores(tweet)
+
+
+def analyse_with_roberta(tweet):
+    processed_tweet = process_tweet(tweet_text=tweet, tokenizer=tokenizer, max_len=100)
+    scores = score(model, processed_tweet)
+    return scores
 
 
 def analyse_per_language(tweet, lan):
@@ -18,7 +30,7 @@ def analyse_per_language(tweet, lan):
     :return:
     """
     if lan == 'en':
-        return analyse(tweet)
+        return analyse_with_roberta(tweet)
     else:
-        return {'compound': 0.5}
+        return {x: 0.5 for x in EMOTIONS}
 
