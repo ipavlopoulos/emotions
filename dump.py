@@ -26,7 +26,8 @@ def dump(lan, config, country_code):
 @click.option('--lan', default='en')
 @click.option('--config', default="configs/configuration.yaml")
 @click.option('--days', default=7)
-def aggregate_n_dump(lan, config, days):
+@click.option('--country_code', default="US")
+def aggregate_n_dump(lan, config, days, country_code):
     # load the tweets of the requested language
     config = load_yaml(config)[lan]
     data = pd.read_csv(f"{config['path']}tweets_id_0.csv")
