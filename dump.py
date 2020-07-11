@@ -47,7 +47,7 @@ def aggregate_n_dump(lan, config, days, country_code):
     places["size"] = tweets.groupby(["day", "state"]).sentiment.apply(lambda x: len(x))
     for abbr in state_map:
         state = state_map[abbr]
-        places.xs(state, level=1).to_csv(f"docs/DATA/{state}.csv", index=False)
+        places.xs(state, level=1).reset_index().to_csv(f"docs/DATA/{state}.csv", index=False)
 
 
 state_map = {"NV": "Nevada",

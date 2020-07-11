@@ -48,9 +48,8 @@
 
         for (var i = 0; i < allRows.length; i++) {
             row = allRows[i];
-            if (row["country_code"]==="US"){
-                x.push(row['created_at']);
-                y.push(row['sentiment']);}
+            x.push(row['day']);
+            y.push(row['sentiment']);
         }
         console.log('X', x, 'Y', y, 'SD', standard_deviation);
         makePlotly(x, y, standard_deviation);
