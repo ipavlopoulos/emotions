@@ -25,9 +25,8 @@ def dump(lan, config, country_code):
 @cli.command()
 @click.option('--lan', default='en')
 @click.option('--config', default="configs/configuration.yaml")
-@click.option('--country_code', default="US")
 @click.option('--days', default=7)
-def aggregate_n_dump(lan, config, country_code, days):
+def aggregate_n_dump(lan, config, days):
     # load the tweets of the requested language
     config = load_yaml(config)[lan]
     data = pd.read_csv(f"{config['path']}tweets_id_0.csv")
@@ -44,7 +43,9 @@ def aggregate_n_dump(lan, config, country_code, days):
     places = pd.DataFrame()
     places["sentiment"] = tweets.groupby(["day", "state"]).sentiment.apply(lambda x: np.mean([float(s) for s in x]))
     places["size"] = tweets.groupby(["day", "state"]).sentiment.apply(lambda x: len(x))
-    tweets.to_csv(f"{config['path']}.{str(yesterday)[:10]}.{country_code}.csv", index=False)
+    for abbr in state_map:
+        state = state_map[abbr]
+        places.xs(state, level=1).to.to_csv(f"{config['path']}.{state}.csv", index=False)
 
 
 state_map = {"NV": "Nevada",
