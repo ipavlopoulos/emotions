@@ -94,6 +94,6 @@ def find_us_state(place, state_map=state_map):
 
 
 if __name__ == "__main__":
-    dump()
+    aggregate_n_dump()
 
 
