@@ -2,6 +2,7 @@ from utils import load_yaml
 import pandas as pd
 import click
 from datetime import datetime, timedelta
+import numpy as np
 
 cli = click.Group()
 
