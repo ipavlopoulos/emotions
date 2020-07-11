@@ -35,8 +35,12 @@
 <body>
 <div id="myDiv" style="width: 480px; height: 400px;"><!-- Plotly chart will be drawn inside this DIV --></div>
 <script>
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const state = urlParams.get('state')
+    const url = "https://raw.githubusercontent.com/ipavlopoulos/emotions/master/docs/DATA/"+state+".csv";
     function makeplot() {
-        Plotly.d3.csv("https://raw.githubusercontent.com/ipavlopoulos/emotions/master/docs/DATA/2020-07-08.csv", function (data) {
+        Plotly.d3.csv(url, function (data) {
             processData(data)
         });
     };
@@ -63,7 +67,7 @@
         }];
 
         Plotly.newPlot('myDiv', traces,
-            {title: 'Sentiment time series, in USA, yesterday.'});
+            {title: 'Twitter sentiment in '+state});
     };
     makeplot();
 </script>
