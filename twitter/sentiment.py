@@ -2,13 +2,14 @@
 
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from transformers import RobertaTokenizer
-
-from models.bert_utils import score, process_tweet, load_torch_model, model_path, EMOTIONS
+import torch
+from bert import score, process_tweet,  model_path, EMOTIONS, BERTClass
 
 tokenizer = RobertaTokenizer.from_pretrained("roberta-large")
 analyzer = SentimentIntensityAnalyzer()
 
-model = load_torch_model(model_path)
+model = BERTClass(num_of_cols=len(EMOTIONS))
+model.load_state_dict(torch.load(model_path))
 
 
 def analyse(tweet):
