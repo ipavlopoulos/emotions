@@ -5,7 +5,7 @@ from transformers import RobertaTokenizer
 
 from models.bert_utils import score, process_tweet, load_torch_model, model_path, EMOTIONS
 
-tokenizer = RobertaTokenizer.from_pretrained("roberta_large")
+tokenizer = RobertaTokenizer.from_pretrained("roberta-large")
 analyzer = SentimentIntensityAnalyzer()
 
 model = load_torch_model(model_path)
