@@ -44,7 +44,7 @@ class DataHandler:
         if not os.path.exists(path):
             return self.max_capacity_per_file
         else:
-            return self.max_capacity_per_file - len(pd.read_csv(path))
+            return self.max_capacity_per_file - len(pd.read_csv(path, lineterminator='\n'))
 
     def get_latest_path(self) -> str:
         """
@@ -59,7 +59,7 @@ class DataHandler:
                             ".csv")
 
     def get_dataframe_by_id(self, num):
-        return pd.read_csv(self.get_path_by_id(num)) if os.path.exists(self.get_path_by_id(num)) else pd.DataFrame()
+        return pd.read_csv(self.get_path_by_id(num), lineterminator='\n') if os.path.exists(self.get_path_by_id(num)) else pd.DataFrame()
 
     def get_latest_dataframe(self):
         return self.get_dataframe_by_id(self.get_latest_path_id())
@@ -121,12 +121,6 @@ class DataHandler:
             df_old = self.get_latest_dataframe()
             self.append(df_old, split1)
             self.dump_on_new_file(split2)
-
-    def load_last(self) -> pd.DataFrame:
-        """
-        load last file
-        """
-        return pd.read_csv(self.get_latest_path())
 
     def load_all_data(self) -> pd.DataFrame:
         """
