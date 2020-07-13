@@ -1,5 +1,6 @@
 <head>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 
 <!--div id="positive_div" style="width:600px;height:250px;"></div-->
@@ -33,7 +34,16 @@
 </head>
 
 <body>
-<div id="myDiv" style="width: 480px; height: 400px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<a href="?state=Arizona" class="btn btn-light">Arizona</a>
+<a href="?state=New York" class="btn btn-light">New York</a>
+<a href="?state=California" class="btn btn-light">California</a>
+<a href="?state=Texas" class="btn btn-light">Texas</a>
+<a href="?state=New Jersey" class="btn btn-light">New Jersey</a>
+<a href="?state=Washington" class="btn btn-light">Washington</a>
+<a href="?state=Massachusetts" class="btn btn-light">Massachusetts</a>
+<a href="?state=Minnesota" class="btn btn-light">Minnesota</a>
+
+<div id="myDiv" style="width: 100%;"><!-- Plotly chart will be drawn inside this DIV --></div>
 <script>
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -44,6 +54,13 @@
             processData(data)
         });
     };
+
+    function changeState(value){
+        urlParams.set("state", value);
+        window.location.search = urlParams.toString();
+        alert(urlParams.get("state"));
+        window.location.reload();
+    }
 
     function processData(allRows) {
 
