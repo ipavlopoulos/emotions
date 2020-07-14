@@ -97,8 +97,8 @@ class GlobalStreamListener(tweepy.StreamListener):
                     self.trust.append(scores['trust'])
                     self.positive.append(scores['positive'])
                     self.negative.append(scores['negative'])
-            except:
-                print(f"Could not detect the language for: {txt}")
+            except Exception as ex:
+                print(ex)
                 #todo: add to logger
 
     def get_size_of_data(self):
