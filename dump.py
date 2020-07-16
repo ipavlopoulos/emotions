@@ -32,7 +32,7 @@ def dump(lan, config, country_code):
 def aggregate_n_dump(lan, config, days, country_code):
     # load the tweets of the requested language
     config = load_yaml(config)[lan]
-    paths = [filepath for filepath in os.listdir() if filepath.endswith(".csv")]
+    paths = [filepath for filepath in os.listdir(config['path']) if filepath.endswith(".csv")]
     dataframes = [pd.read_csv(config['path']+filepath) for filepath in paths]
     data = pd.concat(dataframes)
     tweets = data[data.is_retweet == False]
