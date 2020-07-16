@@ -14,14 +14,14 @@ cli = click.Group()
 def dump(lan, config, country_code):
     # load the tweets of the requested language
     config = load_yaml(config)[lan]
-    data = pd.read_csv(f"{config['path']}tweets_id_0.csv")
+    data = pd.read_csv(config['path']+"tweets_id_0.csv")
     tweets = data[data.is_retweet == False]
     # fetch only tweets from yesterday
     tweets.set_index(pd.to_datetime(tweets.created_at, format='%a %b %d %H:%M:%S +0000 %Y'), inplace=True)
     yesterday = datetime.now() - timedelta(1)
     # filter past ones (the cron should run at 00:00:01)
     tweets = tweets[tweets.index >= yesterday]
-    tweets.to_csv(f"{config['path']}.{str(yesterday)[:10]}.{country_code}.csv", index=False)
+    tweets.to_csv(config['path']+"."+str(yesterday)[:10]+"."+country_code+".csv", index=False)
 
 
 @cli.command()
@@ -32,7 +32,7 @@ def dump(lan, config, country_code):
 def aggregate_n_dump(lan, config, days, country_code):
     # load the tweets of the requested language
     config = load_yaml(config)[lan]
-    paths = [filepath for filepath in os.listdir(self.directory) if filepath.endswith(".csv")]
+    paths = [filepath for filepath in os.listdir() if filepath.endswith(".csv")]
     dataframes = [pd.read_csv(config['path']+filepath) for filepath in paths]
     data = pd.concat(dataframes)
     tweets = data[data.is_retweet == False]
