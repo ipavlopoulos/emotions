@@ -33,7 +33,7 @@ def aggregate_n_dump(lan, config, days, country_code):
     # load the tweets of the requested language
     config = load_yaml(config)[lan]
     paths = [filepath for filepath in os.listdir(config['path']) if filepath.endswith(".csv")]
-    dataframes = [pd.read_csv(config['path']+filepath) for filepath in paths]
+    dataframes = [pd.read_csv(config['path']+filepath, lineterminator='\n') for filepath in paths]
     data = pd.concat(dataframes)
     tweets = data[data.is_retweet == False]
     tweets['day'] = pd.to_datetime(tweets.created_at, format='%a %b %d %H:%M:%S +0000 %Y').dt.strftime('%Y-%m-%d')
