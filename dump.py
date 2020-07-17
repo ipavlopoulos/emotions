@@ -46,7 +46,10 @@ def aggregate_n_dump(lan, config, days, country_code):
     tweets = tweets[tweets.full_name.notna()]
     tweets["state"] = tweets.full_name.apply(find_us_state)
     places = pd.DataFrame()
-    places["sentiment"] = tweets.groupby(["day", "state"]).sentiment.apply(lambda x: np.mean([float(s) for s in x]))
+    positive_emotions = ['positive', 'trust', 'joy', 'love', 'optimism']
+    negative_emotions = ['negative', 'pessimism', 'sadness', 'surprise', 'anger', 'anticipation', 'disgust', 'fear']
+    for sentiment in positive_emotions+negative_emotions:
+        places[sentiment] = tweets.groupby(["day", "state"])[sentiment].apply(lambda x: np.mean([float(s) for s in x]))
     places["size"] = tweets.groupby(["day", "state"]).sentiment.apply(lambda x: len(x))
     for abbr in state_map:
         state = state_map[abbr]

@@ -44,6 +44,7 @@
 <a href="?state=Minnesota" class="btn btn-light">Minnesota</a>
 
 <div id="myDiv" style="width: 100%;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<footer style="font-family:courier;position:absolute;bottom:0;right:10px;">&copy; Copyright 2020 J. Pavlopoulos</footer>
 <script>
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -70,7 +71,7 @@
         for (var i = 0; i < allRows.length; i++) {
             row = allRows[i];
             x.push(row['day']);
-            y.push(row['sentiment']);
+            y.push(row['positive']);
         }
         console.log('X', x, 'Y', y, 'SD', standard_deviation);
         makePlotly(x, y, standard_deviation);
@@ -84,7 +85,7 @@
         }];
 
         Plotly.newPlot('myDiv', traces,
-            {title: 'Twitter sentiment in '+state});
+            {title: 'Twitter positive sentiment in '+state});
     };
     makeplot();
 </script>
