@@ -3,6 +3,7 @@ import pandas as pd
 import click
 from datetime import datetime, timedelta
 import numpy as np
+import os
 
 cli = click.Group()
 
@@ -13,14 +14,14 @@ cli = click.Group()
 def dump(lan, config, country_code):
     # load the tweets of the requested language
     config = load_yaml(config)[lan]
-    data = pd.read_csv(f"{config['path']}tweets_id_0.csv")
+    data = pd.read_csv(config['path']+"tweets_id_0.csv")
     tweets = data[data.is_retweet == False]
     # fetch only tweets from yesterday
     tweets.set_index(pd.to_datetime(tweets.created_at, format='%a %b %d %H:%M:%S +0000 %Y'), inplace=True)
     yesterday = datetime.now() - timedelta(1)
     # filter past ones (the cron should run at 00:00:01)
     tweets = tweets[tweets.index >= yesterday]
-    tweets.to_csv(f"{config['path']}.{str(yesterday)[:10]}.{country_code}.csv", index=False)
+    tweets.to_csv(config['path']+"."+str(yesterday)[:10]+"."+country_code+".csv", index=False)
 
 
 @cli.command()
@@ -31,7 +32,9 @@ def dump(lan, config, country_code):
 def aggregate_n_dump(lan, config, days, country_code):
     # load the tweets of the requested language
     config = load_yaml(config)[lan]
-    data = pd.read_csv(f"{config['path']}tweets_id_0.csv")
+    paths = [filepath for filepath in os.listdir(config['path']) if filepath.endswith(".csv")]
+    dataframes = [pd.read_csv(config['path']+filepath, lineterminator='\n') for filepath in paths]
+    data = pd.concat(dataframes)
     tweets = data[data.is_retweet == False]
     tweets['day'] = pd.to_datetime(tweets.created_at, format='%a %b %d %H:%M:%S +0000 %Y').dt.strftime('%Y-%m-%d')
     # fetch only tweets from yesterday
@@ -43,11 +46,15 @@ def aggregate_n_dump(lan, config, days, country_code):
     tweets = tweets[tweets.full_name.notna()]
     tweets["state"] = tweets.full_name.apply(find_us_state)
     places = pd.DataFrame()
-    places["sentiment"] = tweets.groupby(["day", "state"]).sentiment.apply(lambda x: np.mean([float(s) for s in x]))
+    positive_emotions = ['positive', 'trust', 'joy', 'love', 'optimism']
+    negative_emotions = ['negative', 'pessimism', 'sadness', 'surprise', 'anger', 'anticipation', 'disgust', 'fear']
+    for sentiment in positive_emotions+negative_emotions:
+        places[sentiment] = tweets.groupby(["day", "state"])[sentiment].apply(lambda x: np.mean([float(s) for s in x]))
     places["size"] = tweets.groupby(["day", "state"]).sentiment.apply(lambda x: len(x))
     for abbr in state_map:
         state = state_map[abbr]
-        places.xs(state, level=1).reset_index().to_csv(f"docs/DATA/{state}.csv", index=False)
+        if state in places.index.get_level_values(1):
+            places.xs(state, level=1).reset_index().to_csv(f"docs/DATA/{state}.csv", index=False)
 
 
 state_map = {"NV": "Nevada",
