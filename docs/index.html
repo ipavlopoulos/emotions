@@ -3,36 +3,6 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 
-<!--div id="positive_div" style="width:600px;height:250px;"></div-->
-<!--div id="negative_div" style="width:600px;height:250px;"></div-->
-<!--script>
-    var pos_data = [{y: [0.1, 0.2, 1, 4, 10], x: ['2020-07-01', '2020-07-15','2020-08-1', '2020-08-15'], line: {color: 'green'}}]
-    var neg_data = [{y: [5, 4, 2, 0.5, 0.01], x: ['2020-07-01', '2020-07-15','2020-08-1', '2020-08-15'], line: {color: 'red'}}]
-	Plotly.newPlot(document.getElementById('positive_div'), pos_data, {title: 'Positive Sentiment',} );
-	Plotly.newPlot(document.getElementById('negative_div'), neg_data, {title: 'Negative Sentiment',} );
-
-</script-->
-
-<!--script>
-    Plotly.d3.csv('https://raw.githubusercontent.com/apodagrosi/datasets/master/PlotlyTest_Summary_SalesByDealerByYear.csv', (err, rows) => {
-        var data = years.map(y => {
-            var d = rows.filter(r => r.year === y)
-
-            return {
-                type: 'bar',
-                name: y,
-                x: d.map(r => r.dealer),
-                y: d.map(r => r.sales)
-            }
-        })
-    }
-</script-->
-
-<head>
-    <!-- Plotly.js -->
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-</head>
-
 <body>
 <a href="?state=Arizona" class="btn btn-light">Arizona</a>
 <a href="?state=New York" class="btn btn-light">New York</a>
@@ -43,8 +13,24 @@
 <a href="?state=Massachusetts" class="btn btn-light">Massachusetts</a>
 <a href="?state=Minnesota" class="btn btn-light">Minnesota</a>
 
-<div id="myDiv" style="width: 100%;"><!-- Plotly chart will be drawn inside this DIV --></div>
-<footer style="font-family:courier;position:absolute;bottom:0;right:10px;">&copy; Copyright 2020 J. Pavlopoulos</footer>
+<div style="width: 100%; overflow: hidden;">
+    <div id="positive" style="width: 50%;float:left;"></div>
+    <div id="negative" style="width: 50%;margin-left: 52%;"></div>
+</div>
+<hr/>
+<div style="width: 100%; overflow: hidden;">
+    <div id="anger" style="width: 100%;"></div>
+    <div id="fear" style="width: 100%;"></div>
+    <div id="sadness" style="width: 100%;"></div>
+    <div id="pessimism" style="width: 100%;"></div>
+</div>
+<hr/>
+<div style="width: 100%; overflow: hidden;">
+    <div id="joy" style="width: 100%;"></div>
+    <div id="love" style="width: 100%;"></div>
+    <div id="optimism" style="width: 100%;"></div>
+    <div id="trust" style="width: 100%;"></div>
+</div>
 <script>
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -66,27 +52,45 @@
     function processData(allRows) {
 
         console.log(allRows);
-        var x = [], y = [], standard_deviation = [];
+        var time=[], pos = [], neg = [];
+        var fea=[], ang = [], sad = [], pes = [];
+        var joy=[], lov = [], opt = [], tru = [];
 
         for (var i = 0; i < allRows.length; i++) {
             row = allRows[i];
-            x.push(row['day']);
-            y.push(row['positive']);
+            time.push(row['day']);
+            pos.push(row['positive']);
+            neg.push(row['negative']);
+            fea.push(row['fear']);
+            ang.push(row['anger']);
+            sad.push(row['sadness']);
+            pes.push(row['pessimism']);
+            joy.push(row['joy']);
+            lov.push(row['love']);
+            opt.push(row['optimism']);
+            tru.push(row['trust']);
         }
-        console.log('X', x, 'Y', y, 'SD', standard_deviation);
-        makePlotly(x, y, standard_deviation);
+        console.log('+:', pos, '-:', neg);
+        makePlotly(time, pos, "positive");
+        makePlotly(time, neg, "negative");
+        makePlotly(time, fea, "fear");
+        makePlotly(time, ang, "anger");
+        makePlotly(time, sad, "sadness");
+        makePlotly(time, pes, "pessimism");
+        makePlotly(time, joy, "joy");
+        makePlotly(time, lov, "love");
+        makePlotly(time, opt, "optimism");
+        makePlotly(time, tru, "trust");
     }
 
-    function makePlotly(x, y, standard_deviation) {
-        var plotDiv = document.getElementById("plot");
+    function makePlotly(x, y, div="positive") {
         var traces = [{
             x: x,
             y: y
         }];
-
-        Plotly.newPlot('myDiv', traces,
-            {title: 'Twitter positive sentiment in '+state});
+        Plotly.newPlot(div, traces, {title: 'Twitter "' +div+ '" sentiment in '+state});
     };
     makeplot();
 </script>
 </body>
+<footer style="font-family:courier;position:absolute;bottom:0;right:10px;">&copy; Copyright 2020 J. Pavlopoulos</footer>
