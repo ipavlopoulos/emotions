@@ -49,7 +49,7 @@
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const state = urlParams.get('state')
-    const url = "https://raw.githubusercontent.com/ipavlopoulos/emotions/master/docs/DATA/"+state+".csv";
+    const url = "https://raw.githubusercontent.com/ipavlopoulos/emotions/add_roberta/docs/DATA/"+state+".csv";
     function makeplot() {
         Plotly.d3.csv(url, function (data) {
             processData(data)
