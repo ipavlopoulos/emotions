@@ -14,23 +14,27 @@
 <a href="?state=Minnesota" class="btn btn-light">Minnesota</a>
 
 <div style="width: 100%; overflow: hidden;">
-    <div id="positive" style="width: 50%;float:left;"></div>
-    <div id="negative" style="width: 50%;margin-left: 52%;"></div>
+    <div id="negative" style="width: 50%;float:left;"></div>
+    <div id="positive" style="width: 50%;margin-left: 52%;"></div>
 </div>
 <hr/>
 <div style="width: 100%; overflow: hidden;">
-    <div id="anger" style="width: 100%;"></div>
-    <div id="fear" style="width: 100%;"></div>
-    <div id="sadness" style="width: 100%;"></div>
-    <div id="pessimism" style="width: 100%;"></div>
+    <div id="fear" style="width: 50%;float:left;"></div>
+    <div id="trust" style="width: 50%;margin-left: 52%;"></div>
 </div>
-<hr/>
 <div style="width: 100%; overflow: hidden;">
-    <div id="joy" style="width: 100%;"></div>
-    <div id="love" style="width: 100%;"></div>
-    <div id="optimism" style="width: 100%;"></div>
-    <div id="trust" style="width: 100%;"></div>
+    <div id="sadness" style="width: 50%;float:left;"></div>
+    <div id="joy" style="width: 50%;margin-left: 52%;"></div>
 </div>
+<div style="width: 100%; overflow: hidden;">
+    <div id="anger" style="width: 50%;float:left;"></div>
+    <div id="love" style="width: 50%;margin-left: 52%;"></div>
+</div>
+<div style="width: 100%; overflow: hidden;">
+    <div id="optimism" style="width: 50%;float:left;"></div>
+    <div id="pessimism" style="width: 50%;margin-left: 52%;"></div>
+</div>
+
 <script>
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -71,26 +75,27 @@
             tru.push(row['trust']);
         }
         console.log('+:', pos, '-:', neg);
-        makePlotly(time, pos, "positive");
-        makePlotly(time, neg, "negative");
-        makePlotly(time, fea, "fear");
-        makePlotly(time, ang, "anger");
-        makePlotly(time, sad, "sadness");
-        makePlotly(time, pes, "pessimism");
-        makePlotly(time, joy, "joy");
-        makePlotly(time, lov, "love");
-        makePlotly(time, opt, "optimism");
-        makePlotly(time, tru, "trust");
+        makePlotly(time, pos, "green", "positive");
+        makePlotly(time, neg, "red", "negative");
+        makePlotly(time, fea, "salmon", "fear");
+        makePlotly(time, ang, "salmon", "anger");
+        makePlotly(time, sad, "salmon", "sadness");
+        makePlotly(time, pes, "salmon", "pessimism");
+        makePlotly(time, joy, "seagreen", "joy");
+        makePlotly(time, lov, "seagreen", "love");
+        makePlotly(time, opt, "seagreen", "optimism");
+        makePlotly(time, tru, "seagreen", "trust");
     }
 
-    function makePlotly(x, y, div="positive") {
+    function makePlotly(x, y, color, div="positive") {
         var traces = [{
             x: x,
-            y: y
+            y: y,
+            line: {color: color}
         }];
-        Plotly.newPlot(div, traces, {title: 'Twitter "' +div+ '" sentiment in '+state});
+        Plotly.newPlot(div, traces, {title: 'Estimated "'+div + '" sentiment/emotions in ' + state});
     };
     makeplot();
 </script>
 </body>
-<footer style="font-family:courier;position:absolute;bottom:0;right:10px;">&copy; Copyright 2020 J. Pavlopoulos</footer>
+<!--footer style="font-family:courier;position:absolute;bottom:0;right:10px;">&copy; Copyright 2020 J. Pavlopoulos</footer-->
