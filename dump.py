@@ -54,7 +54,7 @@ def aggregate_n_dump(lan, config, days, country_code):
     for abbr in state_map:
         state = state_map[abbr]
         if state in places.index.get_level_values(1):
-            places.xs(state, level=1).reset_index().to_csv(f"docs/DATA/{state}.csv", index=False)
+            places.xs(state, level=1).reset_index().to_csv("docs/DATA/"+state+".csv", index=False)
 
 
 state_map = {"NV": "Nevada",
