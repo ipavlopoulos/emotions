@@ -50,7 +50,7 @@ def aggregate_n_dump(lan, config, days, country_code):
     negative_emotions = ['negative', 'pessimism', 'sadness', 'surprise', 'anger', 'anticipation', 'disgust', 'fear']
     for sentiment in positive_emotions+negative_emotions:
         places[sentiment] = tweets.groupby(["day", "state"])[sentiment].apply(lambda x: np.mean([float(s) for s in x]))
-    places["size"] = tweets.groupby(["day", "state"]).sentiment.apply(lambda x: len(x))
+    places["size"] = tweets.groupby(["day", "state"]).positive.apply(lambda x: len(x))
     for abbr in state_map:
         state = state_map[abbr]
         if state in places.index.get_level_values(1):
@@ -78,7 +78,6 @@ state_map = {"NV": "Nevada",
              "VA": "Virginia",
              "TN": "Tennessee",
              "CT": "Connecticut",
-             "WI": "Wisconsin",
              "AZ": "Arizona",
              "HI": "Hawaii",
              "OR": "Oregon",
