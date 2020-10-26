@@ -11,6 +11,11 @@
 <a href="?state=Massachusetts" class="btn btn-light">Massachusetts</a>
 <a href="?state=Minnesota" class="btn btn-light">Minnesota</a>
     
+
+<div style="width: 100%; overflow: hidden;">
+    <div id="health"></div>
+</div>
+
 <div style="width: 100%; overflow: hidden;">
     <div id="negative" style="width: 50%;float:left;"></div>
     <div id="positive" style="width: 50%;margin-left: 52%;"></div>
@@ -94,6 +99,22 @@
         Plotly.newPlot(div, traces, {title: 'Estimated "'+div + '" sentiment/emotions in ' + state, yaxis:{range:[0,1]}});
     };
     makeplot();
+        function plotHealthData(allRows){
+        var time=[], deaths = [], infections = [];
+        for (var i = 0; i < allRows.length; i++) {
+            time.push(allRows[i]['date']);
+            deaths.push(allRows[i]['death']);
+            infections.push(allRows[i]['positive']);
+        }
+        var traces = [{
+            x: time,
+            y: infections,
+            line: {color: "red"}
+        }];
+        Plotly.newPlot("health", traces, {title: 'Infections in ' + state});
+    }
+    Plotly.d3.csv("https://api.covidtracking.com/v1/states/ca/daily.csv", function (data) {plotHealthData(data)});
+
 </script>
 </body>
 <!--footer style="font-family:courier;position:absolute;bottom:0;right:10px;">&copy; Copyright 2020 J. Pavlopoulos</footer-->
