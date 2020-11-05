@@ -1,17 +1,23 @@
 # https://github.com/cjhutto/vaderSentiment
 
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-from transformers import RobertaTokenizer
+from transformers import RobertaTokenizer, AutoTokenizer
 import torch
-from bert import score, process_tweet,  model_path, EMOTIONS, BERTClass
+from bert import score, process_tweet,  model_path, EMOTIONS, BERTClass, TinyBert
 from torch import cuda
 
+DEBUG = True
 device = 'cuda' if cuda.is_available() else 'cpu'
-tokenizer = RobertaTokenizer.from_pretrained("roberta-large")
-analyzer = SentimentIntensityAnalyzer()
 
-model = BERTClass(num_of_cols=len(EMOTIONS)).to(device)
-model.load_state_dict(torch.load(model_path,  map_location=lambda storage, loc: storage))
+if DEBUG:
+    tokenizer = AutoTokenizer.from_pretrained("prajjwal1/bert-tiny")
+    model = TinyBert(num_of_cols=len(EMOTIONS)).to(device)
+else:
+    tokenizer = RobertaTokenizer.from_pretrained("roberta-large")
+    model = BERTClass(num_of_cols=len(EMOTIONS)).to(device)
+    model.load_state_dict(torch.load(model_path, map_location=lambda storage, loc: storage))
+
+analyzer = SentimentIntensityAnalyzer()
 
 
 def analyse(tweet):
