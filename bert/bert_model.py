@@ -14,3 +14,4 @@ class BERTClass(torch.nn.Module):
         output_2 = self.l2(output_1)
         output = self.l3(output_2)
         return output
+

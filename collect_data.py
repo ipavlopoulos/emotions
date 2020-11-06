@@ -13,7 +13,7 @@ cli = click.Group()
 def execute_data_collection(lan, config, twitter_config):
     config = load_yaml(config)[lan]
     twitter_config = load_yaml(twitter_config)['twitter_credentials']
-    handler = DataHandler(directory=config['path'], max_capacity_per_file=config['csv_size'])
+    handler = DataHandler(directory=config['path'])
     listener = GlobalStreamListener(lan=lan, handler=handler,
                                     update_data_size=config['update_data_size'], stream_all=True)
     executor = StreamExecutor(listener, twitter_config=twitter_config)
