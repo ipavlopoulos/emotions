@@ -1,12 +1,12 @@
 import pandas as pd
 import torch
 from torch.utils.data import Dataset, DataLoader
-from transformers import RobertaTokenizer
+from transformers import RobertaTokenizer, AutoTokenizer
 from tqdm import tqdm
 from torch import cuda
-from bert import BERTClass, model_path
+from bert import BERTClass,TinyBert, model_path
 import click
-
+import datetime
 
 cli = click.Group()
 
@@ -77,35 +77,46 @@ def score_data(model, data_loader, label_cols):
     return results
 
 
-@click.option('--input_path')
-@click.option('--output_path')
-def run(input_path, output_path):
+@click.option('--input_dir')
+@click.option('--result_dir')
+@click.option('--debug',  default=False)
+@click.option('--only_located',  default=True)
+def run(input_dir, result_dir, debug, only_located):
+    datetime.date.today() - datetime.timedelta(1)
     label_cols = ['anger', 'anticipation', 'disgust',
                   'fear', 'joy', 'love',
                   'optimism', 'pessimism', 'sadness',
                   'surprise', 'trust']
-    df = pd.read_csv(input_path, sep='\t')
+    df = pd.read_csv(input_dir)
+    if only_located:
+        df = df.dropna(subset=['full_name']).reset_index()
     df['dummy_id'] = range(len(df))
-    bert_path = 'roberta-large'
-    MAX_LEN = 50
-    VALID_BATCH_SIZE = 8
-    tokenizer = RobertaTokenizer.from_pretrained(bert_path)
+    bert_path =  '' if debug else 'roberta-large'
+    max_len = 50
+    valid_batch_size = 8
+    if debug:
+        tokenizer = AutoTokenizer.from_pretrained(bert_path)
+    else:
+        tokenizer = RobertaTokenizer.from_pretrained(bert_path)
 
     df_test = prepare_df(df, 'full_text', label_cols=label_cols)
 
-    testing_set = CustomDataset(df_test, tokenizer, MAX_LEN)
+    testing_set = CustomDataset(df_test, tokenizer, max_len)
 
-    test_params = {'batch_size': VALID_BATCH_SIZE,
+    test_params = {'batch_size': valid_batch_size,
                    'shuffle': False,
                    'num_workers': 0
                    }
 
     testing_loader = DataLoader(testing_set, **test_params)
 
-    model = BERTClass(num_of_cols=len(label_cols))
-    model.to(device)
-    print("model loaded.")
-    model.load_state_dict(torch.load(model_path))
+    if debug:
+        model = BERTClass(num_of_cols=len(label_cols))
+        model.to(device)
+        print("model loaded.")
+        model.load_state_dict(torch.load(model_path))
+    else:
+        model = TinyBert(num_of_cols=len(label_cols))
     results = score_data(model, testing_loader, label_cols=label_cols)
 
     df2 = pd.DataFrame.from_dict(results)
@@ -114,7 +125,7 @@ def run(input_path, output_path):
 
     result = result.drop(columns=['dummy_id'])
 
-    result.to_csv(output_path, index=False)
+    result.to_csv(result_dir, index=False)
 
 
 
