@@ -7,6 +7,9 @@ from torch import cuda
 from bert import BERTClass,TinyBert, model_path
 import click
 import datetime
+import os
+import time
+
 
 cli = click.Group()
 
@@ -21,7 +24,7 @@ class CustomDataset(Dataset):
         self.comment_text = dataframe.comment_text
         self.targets = self.data.targets
         self.max_len = max_len
-        self.dummy_id  = dataframe.dummy_id
+        self.dummy_id = dataframe.dummy_id
 
     def __len__(self):
         return len(self.comment_text)
@@ -77,33 +80,34 @@ def score_data(model, data_loader, label_cols):
     return results
 
 
-@click.option('--input_dir')
-@click.option('--result_dir')
-@click.option('--debug',  default=False)
-@click.option('--only_located',  default=True)
-def run(input_dir, result_dir, debug, only_located):
-    datetime.date.today() - datetime.timedelta(1)
+def run(input_dir, result_dir, debug, only_located, batch_size):
+    previous_date = str(datetime.date.today() - datetime.timedelta(1))
+    print(previous_date)
     label_cols = ['anger', 'anticipation', 'disgust',
                   'fear', 'joy', 'love',
                   'optimism', 'pessimism', 'sadness',
                   'surprise', 'trust']
-    df = pd.read_csv(input_dir)
+    df = pd.read_csv(os.path.join(input_dir, previous_date+".csv"))
     if only_located:
         df = df.dropna(subset=['full_name']).reset_index()
     df['dummy_id'] = range(len(df))
-    bert_path =  '' if debug else 'roberta-large'
+
+    for col in label_cols:
+        df[col] = 0.0
+    bert_path = "prajjwal1/bert-tiny" if debug else 'roberta-large'
     max_len = 50
-    valid_batch_size = 8
     if debug:
         tokenizer = AutoTokenizer.from_pretrained(bert_path)
     else:
         tokenizer = RobertaTokenizer.from_pretrained(bert_path)
 
-    df_test = prepare_df(df, 'full_text', label_cols=label_cols)
+    df_test = prepare_df(df, 'text', label_cols=label_cols)
+
+    df = df.drop(columns=label_cols)
 
     testing_set = CustomDataset(df_test, tokenizer, max_len)
 
-    test_params = {'batch_size': valid_batch_size,
+    test_params = {'batch_size': batch_size,
                    'shuffle': False,
                    'num_workers': 0
                    }
@@ -111,12 +115,13 @@ def run(input_dir, result_dir, debug, only_located):
     testing_loader = DataLoader(testing_set, **test_params)
 
     if debug:
+        model = TinyBert(num_of_cols=len(label_cols))
+
+    else:
         model = BERTClass(num_of_cols=len(label_cols))
         model.to(device)
         print("model loaded.")
         model.load_state_dict(torch.load(model_path))
-    else:
-        model = TinyBert(num_of_cols=len(label_cols))
     results = score_data(model, testing_loader, label_cols=label_cols)
 
     df2 = pd.DataFrame.from_dict(results)
@@ -125,10 +130,28 @@ def run(input_dir, result_dir, debug, only_located):
 
     result = result.drop(columns=['dummy_id'])
 
-    result.to_csv(result_dir, index=False)
+    if not os.path.exists(result_dir):
+        os.makedirs(result_dir)
+
+    result.to_csv(os.path.join(result_dir, previous_date), index=False)
 
 
+@cli.command()
+@click.option('--input_dir', default="../tweets/en/")
+@click.option('--result_dir', default="../tweets/scored_en")
+@click.option('--debug',  default=True)
+@click.option('--only_located',  default=True)
+@click.option('--batch_size',  default=8)
+def loop(input_dir, result_dir, debug, only_located, batch_size):
+    while True:
+        current_time = time.time()
+        run(input_dir, result_dir, debug, only_located, batch_size)
+        duration = time.time() - current_time
+        time.sleep(24 * 60 * 60 - duration)
 
+
+if __name__ == "__main__":
+    loop()
 
 
 

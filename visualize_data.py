@@ -13,7 +13,7 @@ cli = click.Group()
 @click.option('--pins_num', default=1000)
 def execute_data_visualization(lan, config, pins_num):
     config = load_yaml(config)[lan]
-    handler = DataHandler(directory=config['path'], max_capacity_per_file=config['csv_size'])
+    handler = DataHandler(directory=config['path'])
     visualizer = Visualizer(mapping=config['mapping'], handler=handler)
     if not os.path.exists(config['image_dir']):
         os.makedirs(config['image_dir'])
