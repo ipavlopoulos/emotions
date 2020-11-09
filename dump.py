@@ -57,6 +57,7 @@ def aggregate_n_dump(lan, config, days, country_code):
             places.xs(state, level=1).reset_index().to_csv("docs/DATA/"+state+".csv", index=False)
 
 
+
 state_map = {"NV": "Nevada",
              "TX": "Texas",
              "FL": "Florida",
