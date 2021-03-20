@@ -16,7 +16,7 @@ geopandas==0.7.0
 geopy==1.21.0
 idna==2.9
 itsdangerous==1.1.0
-Jinja2==2.11.1
+Jinja2==2.11.3
 kiwisolver==1.1.0
 langdetect==1.0.8
 MarkupSafe==1.1.1
